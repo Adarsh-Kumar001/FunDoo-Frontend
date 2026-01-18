@@ -1,0 +1,43 @@
+<div class="min-h-screen w-full flex justify-center items-center bg-gray-100">
+  
+ <div class="bg-white p-8 rounded flex shadow w-[80%] h-[75%]">
+
+  <div class="w-[55%] flex flex-col gap-4">
+
+    <img
+      src="/google.png"
+      alt="Fundoo Logo"
+      class="ml-3.5 mt-10 mb-3.5 w-28"  
+    />
+
+    <h2 class="text-2xl place-self-start ml-6 font-semibold mb-2 text-center">Create your Fundoo Account</h2>
+    <div class="ml-6 flex gap-6">
+      <input class="w-[50%] border p-3 mb-3 rounded" placeholder="First name" [(ngModel)]="firstName" />
+      <input class="w-[50%] border p-3 mb-3 rounded" placeholder="Last name" [(ngModel)]="lastName" />
+    </div>
+
+    <input class="w-[97.4%] ml-6 border p-3 mb-3 rounded" placeholder="Email" [(ngModel)]="email" />
+    <input type="password" class="w-[97.4%] ml-6 border p-3 mb-4 rounded" placeholder="Password" [(ngModel)]="password" />
+
+    <div class="flex justify-between items-end">
+    <p class="text-base ml-6 mt-2 cursor-pointer">
+      <a routerLink="/auth/login" class="text-blue-500 cursor:pointer">Sign in instead</a>
+    </p>
+
+     <button
+      class="w-[80px] h-[40px] items-center flex justify-center bg-blue-500 text-white p-3 rounded place-self-end cursor-pointer"
+      (click)="register()">
+      Register
+    </button>
+
+    </div>
+
+
+  </div> 
+  
+  <div class="flex justidy-center m-auto">
+    <img src="/registerimage.png" alt="Register Image" class="w-[260px] h-[300px] mt-6"/>
+  </div>
+ 
+</div>
+</div>
