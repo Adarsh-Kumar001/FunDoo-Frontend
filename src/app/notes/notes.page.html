@@ -1,0 +1,79 @@
+<div class="max-w-6xl mx-auto">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold">Fundoo</h1>
+    <button
+      class="text-sm bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </div>
+
+  <!-- Create Note -->
+  <div
+    class="bg-white mx-auto max-w-xl rounded shadow-sm p-3 mb-8"
+    (click)="isExpanded = true"
+  >
+    <input
+      *ngIf="isExpanded"
+      [(ngModel)]="newNote.title"
+      placeholder="Title"
+      class="w-full font-semibold text-lg mb-2 outline-none"
+    />
+
+    <textarea
+      [(ngModel)]="newNote.description"
+      placeholder="Take a note..."
+      class="w-full resize-none outline-none"
+      [rows]="isExpanded ? 3 : 1"
+    ></textarea>
+
+    <div *ngIf="isExpanded" class="flex justify-between items-center mt-2">
+      <input type="color" [(ngModel)]="newNote.color" />
+      <button
+        class="text-sm text-blue-600 font-medium"
+        (click)="addNote()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- Notes Grid -->
+  <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div
+      *ngFor="let note of notes; trackBy: trackById"
+      class="rounded-lg p-4 shadow-sm hover:shadow-md transition"
+      [ngStyle]="{ 'background-color': note.color || '#fff' }"
+    >
+      <input
+        [(ngModel)]="note.title"
+        class="w-full font-semibold text-lg bg-transparent outline-none mb-1"
+        (blur)="updateTitle(note)"
+      />
+
+      <textarea
+        [(ngModel)]="note.description"
+        class="w-full bg-transparent resize-none outline-none"
+        rows="3"
+        (blur)="updateDescription(note)"
+      ></textarea>
+
+      <div class="flex justify-between items-center mt-3 text-sm">
+        <div class="flex gap-3">
+          <button (click)="togglePin(note)">📌</button>
+          <button (click)="toggleArchive(note)">📥</button>
+          <button (click)="deleteNote(note)">🗑️</button>
+        </div>
+
+        <input
+          type="color"
+          [value]="note.color || '#ffffff'"
+          (change)="changeColor(note, $event.target.value)"
+        />
+      </div>
+    </div>
+  </div>
+</div>

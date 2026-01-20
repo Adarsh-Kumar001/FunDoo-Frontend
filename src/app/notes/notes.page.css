@@ -1,0 +1,17 @@
+textarea {
+  font-family: inherit;
+}
+
+input, textarea {
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+button:hover {
+  opacity: 0.8;
+}

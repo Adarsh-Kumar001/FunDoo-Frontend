@@ -2,22 +2,15 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
-
-  private TOKEN_KEY = 'fundoo_token';
-
   saveToken(token: string) {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem('token', token);
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  getToken() {
+    return localStorage.getItem('token');
   }
 
-  removeToken() {
-    localStorage.removeItem(this.TOKEN_KEY);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+  clearToken() {
+    localStorage.removeItem('token');
   }
 }

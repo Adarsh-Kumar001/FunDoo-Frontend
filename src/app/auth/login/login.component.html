@@ -41,10 +41,13 @@
     </div>
 
      <button
+     type="button"
       class="w-[80px] h-[40px] items-center flex justify-center bg-blue-500 text-white p-3 rounded place-self-end cursor-pointer"
       (click)="login()">
       Login
     </button>
+
+    <p class="absolute ml-44" style="color:red">{{ error }}</p>
 
     </div>
 

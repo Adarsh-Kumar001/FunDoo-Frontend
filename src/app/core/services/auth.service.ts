@@ -6,23 +6,31 @@ export class AuthService {
 
   constructor(private api: ApiService) {}
 
-  register(data: any) {
+  register(data: {
+    fullName: string;
+    email: string;
+    password: string;
+  }) {
     return this.api.post('/auth/register', data);
   }
 
-  login(data: any) {
-    return this.api.post<any>('/auth/login', data);
+  login(data: { email: string; password: string }) {
+    return this.api.post('/auth/login', data);
   }
 
-  verifyEmail(token: string) {
-    return this.api.post('/auth/verify-email', { token });
+  verifyEmail(data: { email: string; token: string }) {
+    return this.api.post('/auth/verify-email', data);
   }
 
-  forgotPassword(email: string) {
-    return this.api.post('/auth/forgot-password', { email });
+  forgotPassword(data: { email: string }) {
+    return this.api.post('/auth/forgot-password', data);
   }
 
-  resetPassword(data: any) {
+  resetPassword(data: {
+    email: string;
+    token: string;
+    newPassword: string;
+  }) {
     return this.api.post('/auth/reset-password', data);
   }
 }
