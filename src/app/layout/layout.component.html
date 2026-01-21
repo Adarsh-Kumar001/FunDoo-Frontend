@@ -3,26 +3,32 @@
   <!-- TOP BAR -->
   <header class="flex items-center justify-between px-4 py-2 h-16 border-b-2 border-gray-200 bg-white">
 
+
     <!-- Logo -->
     <div class="flex items-center gap-2">
-      <img src="/Google-Keep-logo.png" class="h-8 w-28" />
-
+      <img src="/Keep.png" class="w-10" />
+      <h1 class="text-gray-400 font-semibold text-xl">Keep</h1>
     </div>
 
-    <!-- Search -->
+    <!-- Search Bar -->
     
     <input
       type="text"
       placeholder="Search"
       class="w-1/2 px-4 py-2 pl-14 bg-gray-100 rounded-md outline-none focus:bg-white focus:shadow"
     />
-    <img src="icons/search.svg" class="h-5 w-5 absolute left-[28rem]"/>
+    <img src="icons/search.svg" class="h-5 w-5 absolute left-[23rem]"/>
 
     <!-- Profile -->
+    <div class="flex items-center">
+        <img src="icons/refresh.svg" alt="refresh" class="w-12 h-12 p-3 hover:bg-gray-200 rounded-full hover:cursor-pointer">
+        <img src="icons/list.svg" alt="list" class="w-12 h-12 p-3 hover:bg-gray-200 rounded-full hover:cursor-pointer">
+        <img src="icons/settings.svg" alt="list" class="w-12 h-12 p-3 hover:bg-gray-200 rounded-full hover:cursor-pointer mr-7">
     <img
       src="https://i.pravatar.cc/40"
       class="h-9 w-9 rounded-full cursor-pointer"
     />
+    </div>
   </header>
 
   <!-- BODY -->
@@ -34,24 +40,38 @@
         <a
           routerLink="/notes"
           routerLinkActive="bg-yellow-100 font-semibold"
-          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100"
+          class="flex items-center gap-9 px-4 py-3 rounded-full rounded-tl-none rounded-bl-none hover:bg-gray-100"
         >
-          <img src="icons/bulb.svg" class="fill-black h-6 w-6"/> Notes
+          <img src="icons/bulb.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">Notes</h4>
+        </a>
+
+        <a routerLink="/reminders"
+          routerLinkActive="bg-yellow-100 font-semibold"
+          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100 rounded-tl-none rounded-bl-none"
+          >
+          <img src="icons/notification.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">Reminders</h4>
+        </a>
+
+        <a routerLink="/edit-labels"
+          routerLinkActive="bg-yellow-100 font-semibold"
+          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100 rounded-tl-none rounded-bl-none"
+          >
+          <img src="icons/edit.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">Edit Labels</h4>
         </a>
 
          <a routerLink="/archive"
           routerLinkActive="bg-yellow-100 font-semibold"
-          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100"
+          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100 rounded-tl-none rounded-bl-none"
           >
-          <img src="icons/archive.svg" class="fill-black h-6 w-6"/> Archive
+          <img src="icons/archive.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">Archive</h4>
         </a>
 
         <a
           routerLink="/bin"
           routerLinkActive="bg-yellow-100 font-semibold"
-          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100"
+          class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100 rounded-tl-none rounded-bl-none"
         >
-          <img src="icons/delete.svg" class="fill-black h-6 w-6"/> Bin
+          <img src="icons/delete.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">Trash</h4>
         </a>
       </nav>
     </aside>
