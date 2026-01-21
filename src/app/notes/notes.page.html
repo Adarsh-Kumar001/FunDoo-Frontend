@@ -25,22 +25,24 @@
     </div>
   </div>
 
+
   <!-- Notes Grid -->
   <!-- PINNED NOTES -->
   <div *ngIf="pinnedNotes.length > 0" class="mb-6">
     <p class="text-xs text-gray-500 font-semibold mb-2 px-1">PINNED</p>
 
-    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start">
       <ng-container *ngFor="let note of pinnedNotes; trackBy: trackById">
-        <div class="rounded-lg p-4 shadow-sm transition-all duration-300
-               hover:shadow-md animate-fade" [ngStyle]="{ 'background-color': note.color || '#fff' }">
+        <div class="group relative rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+          [ngStyle]="{ 'background-color': note.color || '#fff' }"
+          [class.z-50]="activeColorPickerNoteId === note.id" >
 
           <!-- TITLE + PIN -->
           <div class="flex items-start">
             <input [(ngModel)]="note.title" class="w-full font-semibold text-lg bg-transparent outline-none"
-              (change)="updateTitle(note)" />
+              (blur)="updateNote(note)" />
 
-            <button (click)="togglePin(note)" class="p-1">
+            <button (click)="togglePin(note)" class="p-1 opacity-0 group-hover:opacity-100 transition duration-200">
               <!-- PINNED SVG -->
               <svg width="20" height="20" viewBox="0 0 24 24" class="text-gray-700">
                 <path d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2z"
@@ -49,20 +51,35 @@
             </button>
           </div>
 
-        <textarea [(ngModel)]="note.description" class="w-full bg-transparent resize-none outline-none mt-2" rows="3"
-            (change)="updateDescription(note)">
+          <textarea  #noteTextarea [(ngModel)]="note.description" (input)="autoGrow($event); updateNote(note)"
+            class="w-full bg-transparent resize-none outline-none mt-2" rows="3" (blur)="updateNote(note)">
           </textarea>
-          <div class="flex justify-between items-center mt-3 text-sm">
+          <div class="flex justify-between items-center mt-3 text-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
+            
             <div class="w-full flex justify-between gap-3">
-              <input type="color" [value]="note.color || '#ffffff'" (change)="changeColor(note, $event.target.value)" />
 
-              <div class="flex gap-3"> 
+              <div class="relative">
+                <!-- Color Icon -->
+                <button (click)="toggleNoteColorPicker(note.id)" class="p-1 rounded hover:bg-gray-100">
+                  <img src="icons/palette.svg" class="w-5 h-5" />
+                </button>
+
+                <!-- Palette -->
+                <div *ngIf="activeColorPickerNoteId === note.id"
+                  class="absolute bottom-8 left-0 z-10 flex gap-2 bg-white border rounded-full p-2 shadow-md">
+                  <button *ngFor="let color of colors" class="w-6 h-6 rounded-full border hover:scale-110 transition" [ngStyle]="{ 'background-color': color }" (click)="selectNoteColor(note, color)">
+                  
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
                 <button (click)="toggleArchive(note)">
-                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5"> 
-                </button> 
+                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5">
+                </button>
                 <button (click)="deleteNote(note)">
-                  <img src="icons/delete.svg"alt="delete" class="w-5 h-5" >
-                </button> 
+                  <img src="icons/delete.svg" alt="delete" class="w-5 h-5">
+                </button>
               </div>
             </div>
           </div>
@@ -77,16 +94,17 @@
       OTHERS
     </p>
 
-    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start">
       <ng-container *ngFor="let note of otherNotes; trackBy: trackById">
-        <div class="rounded-lg p-4 shadow-sm transition-all duration-300
-               hover:shadow-md animate-fade" [ngStyle]="{ 'background-color': note.color || '#fff' }">
+        <div class="group relative rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+          [ngStyle]="{ 'background-color': note.color || '#fff' }"
+          [class.z-50]="activeColorPickerNoteId === note.id" >
 
           <div class="flex items-start">
             <input [(ngModel)]="note.title" class="w-full font-semibold text-lg bg-transparent outline-none"
-              (change)="updateTitle(note)" />
+              (blur)="updateNote(note)" />
 
-            <button (click)="togglePin(note)" class="p-1">
+            <button (click)="togglePin(note)" class="p-1 opacity-0 group-hover:opacity-100 transition duration-200">
               <!-- UNPINNED SVG -->
               <svg width="20" height="20" viewBox="0 0 24 24" class="text-gray-500 hover:text-gray-700">
                 <path
@@ -96,20 +114,36 @@
             </button>
           </div>
 
-          <textarea [(ngModel)]="note.description" class="w-full bg-transparent resize-none outline-none mt-2" rows="3"
-            (change)="updateDescription(note)"></textarea>
+          <textarea #noteTextarea [(ngModel)]="note.description" (input)="autoGrow($event); updateNote(note)"
+            class="w-full bg-transparent resize-none outline-none mt-2" rows="3" (blur)="updateNote(note)"></textarea>
 
-          <div class="flex justify-between items-center mt-3 text-sm">
+          <div class="flex justify-between items-center mt-3 text-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
+            
             <div class="w-full flex justify-between gap-3">
-              <input type="color" [value]="note.color || '#ffffff'" (change)="changeColor(note, $event.target.value)" />
 
-              <div class="flex gap-3"> 
+              <div class="relative">
+                <!-- Color Icon -->
+                <button (click)="toggleNoteColorPicker(note.id); $event.stopPropagation()"
+                  class="p-1 rounded hover:bg-gray-100">
+                  <img src="icons/palette.svg" class="w-5 h-5" />
+                </button>
+
+                <!-- Color Palette -->
+                <div *ngIf="activeColorPickerNoteId === note.id"
+                  class="absolute z-10 flex gap-2 bg-white border rounded-full p-2 shadow-md mt-2">
+                  <button *ngFor="let color of colors" class="w-6 h-6 rounded-full border hover:scale-110 transition"
+                    [ngStyle]="{ 'background-color': color }" (click)="selectNoteColor(note, color)"></button>
+                </div>
+              </div>
+
+
+              <div class="flex gap-3">
                 <button (click)="toggleArchive(note)">
-                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5"> 
-                </button> 
+                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5">
+                </button>
                 <button (click)="deleteNote(note)">
-                  <img src="icons/delete.svg"alt="delete" class="w-5 h-5" >
-                </button> 
+                  <img src="icons/delete.svg" alt="delete" class="w-5 h-5">
+                </button>
               </div>
             </div>
           </div>

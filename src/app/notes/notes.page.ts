@@ -4,6 +4,8 @@ import { TokenService } from '../core/services/token.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ViewChildren, QueryList, ElementRef, AfterViewInit } from '@angular/core';
+
 
 
 @Component({
@@ -14,7 +16,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./notes.page.css']
 })
 
-export class NotesPage implements OnInit {
+export class NotesPage implements OnInit, AfterViewInit {
 
   notes: Note[] = [];
 
@@ -28,6 +30,26 @@ export class NotesPage implements OnInit {
     description: '',
     color: '#ffffff'
   };
+
+  @ViewChildren('noteTextarea') textareas!: QueryList<ElementRef<HTMLTextAreaElement>>;
+
+  colors: string[] = [
+  '#ffffff', // default
+  '#f28b82', // red
+  '#fbbc04', // orange
+  '#fff475', // yellow
+  '#ccff90', // green
+  '#a7ffeb', // teal
+  '#cbf0f8', // blue
+  '#aecbfa', // dark blue
+  '#d7aefb', // purple
+  '#fdcfe8', // pink
+  '#e6c9a8', // brown
+  '#e8eaed'  // gray
+];
+
+showCreateColorPalette = false;
+activeColorPickerNoteId: number | null = null;
 
   constructor(
     private notesService: NotesService,
@@ -44,6 +66,32 @@ export class NotesPage implements OnInit {
     this.loadNotes();
   }
 
+  selectCreateColor(color: string) {
+  this.newNote.color = color;
+  this.showCreateColorPalette = false;
+}
+
+selectNoteColor(note: Note, color: string) {
+  note.color = color;
+  this.activeColorPickerNoteId = null;
+  this.updateNote(note); // ✅
+}
+
+autoGrow(event: Event) {
+  const textarea = event.target as HTMLTextAreaElement;
+  textarea.style.height = 'auto';
+  textarea.style.height = textarea.scrollHeight + 'px';
+}
+
+
+toggleNoteColorPicker(noteId?: number) {
+  if (noteId == null) return;
+
+  this.activeColorPickerNoteId =
+    this.activeColorPickerNoteId === noteId ? null : noteId;
+}
+
+
   loadNotes(): void {
     this.notesService.getNotes().subscribe({
       next: res => {
@@ -52,11 +100,23 @@ export class NotesPage implements OnInit {
         this.pinnedNotes = active.filter(n => n.isPinned);
         this.otherNotes  = active.filter(n => !n.isPinned);
 
+        setTimeout(() => this.resizeAllTextareas(), 0);  // Resize after view update
+
         this.cdr.detectChanges(); // force Angular to render updated array
       },
       error: err => console.error('Load notes error:', err)
     });
   }
+
+  resizeAllTextareas() {
+  this.textareas.forEach(ref => {
+    const textarea = ref.nativeElement;
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
+}
+
+
 
   addNote(): void {
     if (!this.newNote.title && !this.newNote.description) return;
@@ -68,15 +128,25 @@ export class NotesPage implements OnInit {
     });
   }
 
-  updateTitle(note: Note): void {
-    if (!note.id) return;
-    this.notesService.updateNote(note.id, { title: note.title }).subscribe();
-  }
+  updateNote(note: Note): void {
+  if (!note.id) return;
 
-  updateDescription(note: Note): void {
-    if (!note.id) return;
-    this.notesService.updateNote(note.id, { description: note.description }).subscribe();
-  }
+  this.notesService.updateNote(note.id, {
+    title: note.title,
+    description: note.description,
+    color: note.color,
+    isPinned: note.isPinned,
+    isArchived: note.isArchived
+  }).subscribe({
+    error: err => console.error('Update note failed', err)
+  });
+}
+
+ngAfterViewInit(): void {
+  // Resize all textareas once the view is fully initialized
+  setTimeout(() => this.resizeAllTextareas(), 0);
+}
+
 
   deleteNote(note: Note): void {
     if (!note.id) return;
@@ -84,25 +154,37 @@ export class NotesPage implements OnInit {
   }
 
   togglePin(note: Note): void {
-    if (!note.id) return;
-    this.notesService.togglePin(note.id).subscribe(() => this.loadNotes());
-     this.cdr.detectChanges();
-  }
+  if (!note.id) return;
 
-  toggleArchive(note: Note): void {
-    if (!note.id) return;
-    this.notesService.toggleArchive(note.id).subscribe(() => this.loadNotes());
-  }
+  this.notesService.togglePin(note.id).subscribe({
+    next: () => this.loadNotes(),
+    error: err => console.error('Pin toggle failed', err)
+    
+  });
+}
+
+
+ toggleArchive(note: Note): void {
+  if (!note.id) return;
+
+  this.notesService.toggleArchive(note.id).subscribe({
+    next: () => this.loadNotes(),
+    error: err => console.error('Archive toggle failed', err)
+  });
+}
+
+
 
   changeColor(note: Note, color: string): void {
     if (!note.id) return;
     this.notesService.changeColor(note.id, color).subscribe(() => {
       note.color = color;
+      this.activeColorPickerNoteId = null;
     });
   }
 
-  trackById(index: number, note: Note): number {
-    return note.id ?? index;
+   trackById(index: number, note: Note) {
+     return note.id;
   }
 
   logout(): void {

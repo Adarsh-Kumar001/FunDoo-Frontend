@@ -5,23 +5,61 @@
     <h3 class="text-center mt-2 text-2xl">Your archived notes appear here</h3>
   </div>
 
-  <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-    <div
-      *ngFor="let note of archivedNotes"
-      class="rounded-lg p-4 shadow-sm hover:shadow-md transition"
-      [ngStyle]="{ 'background-color': note.color || '#fff' }"
-    >
-      <h2 class="font-semibold mb-2">{{ note.title }}</h2>
-      <p class="text-gray-700 mb-4">{{ note.description }}</p>
+  <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start">
+    <ng-container *ngFor="let note of archivedNotes; trackBy: trackById">
+      <div class="group relative rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+           [ngStyle]="{ 'background-color': note.color || '#fff' }"
+           [class.z-50]="activeColorPickerNoteId === note.id" >
+           
 
-      <div class="flex justify-end">
-        <button
-          class="text-blue-600 text-sm font-medium hover:underline"
-          (click)="restore(note)"
-        >
-          Restore
-        </button>
+        <!-- TITLE -->
+        <input [(ngModel)]="note.title"
+               class="w-full font-semibold text-lg bg-transparent outline-none"
+               (blur)="updateNote(note)" />
+
+        <!-- DESCRIPTION -->
+        <textarea #noteTextarea
+                  [(ngModel)]="note.description"
+                  (input)="autoGrow(noteTextarea); updateNote(note)"
+                  class="w-full resize-none bg-transparent outline-none mt-2"
+                  rows="3"></textarea>
+
+        <!-- ICONS ON HOVER -->
+        <div class="flex justify-between items-center mt-3 text-sm opacity-0 translate-y-2
+                    group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
+
+          <div class="flex justify-between w-full gap-3">
+
+            <!-- COLOR PALETTE -->
+            <div class="relative">
+              <button (click)="toggleNoteColorPicker(note.id); $event.stopPropagation()"
+                      class="p-1 rounded z-10">
+                <img src="icons/palette.svg" class="w-5 h-5 hover:cursor-pointer"/>
+              </button>
+              <div *ngIf="activeColorPickerNoteId === note.id"
+                   class="absolute bottom-8 left-0 z-10 flex gap-2 bg-white border rounded-full p-2 shadow-md">
+                <button *ngFor="let color of colors"
+                        class="w-6 h-6 rounded-full border hover:scale-110 transition"
+                        [ngStyle]="{ 'background-color': color }"
+                        (click)="selectNoteColor(note, color)">
+                </button>
+              </div>
+            </div>
+
+            <!-- RESTORE & DELETE -->
+            <div class="flex gap-3">
+              <button (click)="restore(note)">
+                <img src="icons/restore.svg" alt="restore" class="w-5 h-5 hover:cursor-pointer"/>
+              </button>
+              <button (click)="deleteNote(note)">
+                <img src="icons/delete.svg" alt="delete" class="w-5 h-5 hover:cursor-pointer"/>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-    </div>
+    </ng-container>
   </div>
 </div>
