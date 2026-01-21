@@ -4,7 +4,6 @@ import { TokenService } from '../core/services/token.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
 
 
 @Component({
