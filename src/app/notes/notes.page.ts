@@ -4,6 +4,8 @@ import { TokenService } from '../core/services/token.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
+
 
 @Component({
   selector: 'app-notes',
@@ -80,6 +82,7 @@ export class NotesPage implements OnInit {
   togglePin(note: Note): void {
     if (!note.id) return;
     this.notesService.togglePin(note.id).subscribe(() => this.loadNotes());
+     this.cdr.detectChanges();
   }
 
   toggleArchive(note: Note): void {

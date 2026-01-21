@@ -1,11 +1,8 @@
 <div class="p-4">
 
-  <h1 class="text-xl font-semibold mb-4 text-gray-700">
-    Archived
-  </h1>
-
   <div *ngIf="archivedNotes.length === 0" class="text-gray-500">
-    No archived notes
+    <img src="icons/archive-gray.svg" alt="Archived Notes" class="m-auto w-28 h-28 mt-32"/>
+    <h3 class="text-center mt-2 text-2xl">Your archived notes appear here</h3>
   </div>
 
   <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

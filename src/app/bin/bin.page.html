@@ -1,9 +1,10 @@
 <div class="p-4 bg-white min-h-screen">
-  <h1 class="text-2xl font-bold mb-4">Bin</h1>
+
 
   <ng-container *ngIf="deletedNotes as notes">
   <div *ngIf="notes.length === 0" class="text-gray-500">
-    Bin is empty
+        <img src="icons/delete-gray.svg" alt="Bin Notes" class="m-auto w-28 h-28 mt-32"/>
+        <h3 class="text-center mt-2 text-2xl">No Notes In Trash</h3>
   </div>
 </ng-container>
 
@@ -21,12 +22,12 @@
         <button
           class="text-green-600 font-bold px-2 py-1 rounded hover:bg-green-100"
           (click)="restoreNote(note)"
-        >♻️ Restore</button>
+        >Restore</button>
 
         <button
           class="text-red-600 font-bold px-2 py-1 rounded hover:bg-red-100"
           (click)="deleteForever(note)"
-        >🗑️ Delete Forever</button>
+        >Delete Forever</button>
       </div>
     </div>
   </div>
