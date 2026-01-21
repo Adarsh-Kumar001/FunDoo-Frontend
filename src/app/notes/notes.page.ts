@@ -17,6 +17,10 @@ import { FormsModule } from '@angular/forms';
 export class NotesPage implements OnInit {
 
   notes: Note[] = [];
+
+  pinnedNotes: Note[] = [];
+  otherNotes: Note[] = [];
+
   isExpanded = false;
 
   newNote: Partial<Note> = {
@@ -43,9 +47,10 @@ export class NotesPage implements OnInit {
   loadNotes(): void {
     this.notesService.getNotes().subscribe({
       next: res => {
-        this.notes = res
-          .filter(n => !n.isDeleted && !n.isArchived)
-          .sort((a, b) => Number(b.isPinned) - Number(a.isPinned));
+        const active = res.filter(n => !n.isDeleted && !n.isArchived);
+
+        this.pinnedNotes = active.filter(n => n.isPinned);
+        this.otherNotes  = active.filter(n => !n.isPinned);
 
         this.cdr.detectChanges(); // force Angular to render updated array
       },

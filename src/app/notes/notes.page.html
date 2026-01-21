@@ -2,115 +2,120 @@
 
   <!-- Header -->
   <div class="flex justify-end items-center mb-6">
-    
-    <button
-      class="text-sm w-[80px] text-white px-4 py-2 rounded absolute right-4 top-24"
-      style="background-color: red;" 
-      (click)="logout()"
-    >
+
+    <button class="text-sm w-[80px] text-white px-4 py-2 rounded absolute right-4 top-24" style="background-color: red;"
+      (click)="logout()">
       Logout
     </button>
   </div>
 
   <!-- Create Note -->
-  <div
-    class="bg-white mx-auto max-w-xl rounded shadow-md shadow-gray-300 p-3 mb-8"
-    (click)="isExpanded = true"
-  >
-    <input
-      *ngIf="isExpanded"
-      [(ngModel)]="newNote.title"
-      placeholder="Title"
-      class="w-full font-semibold text-lg mb-2 outline-none"
-    />
+  <div class="bg-white mx-auto max-w-xl rounded shadow-md shadow-gray-300 p-3 mb-8" (click)="isExpanded = true">
+    <input *ngIf="isExpanded" [(ngModel)]="newNote.title" placeholder="Title"
+      class="w-full font-semibold text-lg mb-2 outline-none" />
 
-    <textarea
-      [(ngModel)]="newNote.description"
-      placeholder="Take a note..."
-      class="w-full resize-none outline-none"
-      [rows]="isExpanded ? 3 : 1"
-    ></textarea>
+    <textarea [(ngModel)]="newNote.description" placeholder="Take a note..." class="w-full resize-none outline-none"
+      [rows]="isExpanded ? 3 : 1"></textarea>
 
     <div *ngIf="isExpanded" class="flex justify-between items-center mt-2">
       <input type="color" [(ngModel)]="newNote.color" />
-      <button
-        class="text-sm text-blue-600 font-medium"
-        (click)="addNote()"
-      >
+      <button class="text-sm text-blue-600 font-medium" (click)="addNote()">
         Close
       </button>
     </div>
   </div>
 
   <!-- Notes Grid -->
-  <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-    <div
-      *ngFor="let note of notes; trackBy: trackById"
-      class="rounded-lg p-4 shadow-sm hover:shadow-md transition"
-      [ngStyle]="{ 'background-color': note.color || '#fff' }"
-    >
+  <!-- PINNED NOTES -->
+  <div *ngIf="pinnedNotes.length > 0" class="mb-6">
+    <p class="text-xs text-gray-500 font-semibold mb-2 px-1">PINNED</p>
 
-    <div class="flex">
-      <input
-        [(ngModel)]="note.title"
-        class="w-full font-semibold text-lg bg-transparent outline-none mb-1"
-        (change)="updateTitle(note)"
-      />
+    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <ng-container *ngFor="let note of pinnedNotes; trackBy: trackById">
+        <div class="rounded-lg p-4 shadow-sm transition-all duration-300
+               hover:shadow-md animate-fade" [ngStyle]="{ 'background-color': note.color || '#fff' }">
 
-     <button (click)="togglePin(note)" class="p-1">
-  
-  <!-- PINNED SVG -->
-  <svg
-    *ngIf="note.isPinned"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    class="text-gray-700"
-  >
-    <path
-      d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2z"
-      fill="currentColor"
-    />
-  </svg>
+          <!-- TITLE + PIN -->
+          <div class="flex items-start">
+            <input [(ngModel)]="note.title" class="w-full font-semibold text-lg bg-transparent outline-none"
+              (change)="updateTitle(note)" />
 
-  <!-- UNPINNED SVG -->
-  <svg
-    *ngIf="!note.isPinned"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    class="text-gray-500 hover:text-gray-700"
-  >
-    <path
-      d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2zM9 4v7.75L7.5 14h9L15 11.75V4H9z"
-      fill="currentColor"
-    />
-  </svg>
+            <button (click)="togglePin(note)" class="p-1">
+              <!-- PINNED SVG -->
+              <svg width="20" height="20" viewBox="0 0 24 24" class="text-gray-700">
+                <path d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
 
-</button>
+        <textarea [(ngModel)]="note.description" class="w-full bg-transparent resize-none outline-none mt-2" rows="3"
+            (change)="updateDescription(note)">
+          </textarea>
+          <div class="flex justify-between items-center mt-3 text-sm">
+            <div class="w-full flex justify-between gap-3">
+              <input type="color" [value]="note.color || '#ffffff'" (change)="changeColor(note, $event.target.value)" />
 
-    </div>
-
-      <textarea
-        [(ngModel)]="note.description"
-        class="w-full bg-transparent resize-none outline-none"
-        rows="3"
-        (change)="updateDescription(note)"
-      ></textarea>
-
-      <div class="flex justify-between items-center mt-3 text-sm">
-        <div class="w-full flex justify-between gap-3">
-          <input
-          type="color"
-          [value]="note.color || '#ffffff'"
-          (change)="changeColor(note, $event.target.value)"
-        />
-          <div class="flex gap-3">
-          <button (click)="toggleArchive(note)"><img src="icons/archive.svg" alt="archive" class="w-5 h-5"></button>
-          <button (click)="deleteNote(note)"><img src="icons/delete.svg" alt="delete" class="w-5 h-5"></button>
+              <div class="flex gap-3"> 
+                <button (click)="toggleArchive(note)">
+                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5"> 
+                </button> 
+                <button (click)="deleteNote(note)">
+                  <img src="icons/delete.svg"alt="delete" class="w-5 h-5" >
+                </button> 
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </div>
+
+  <!-- OTHER NOTES -->
+  <div>
+    <p *ngIf="pinnedNotes.length > 0" class="text-xs text-gray-500 font-semibold mb-2 px-1">
+      OTHERS
+    </p>
+
+    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <ng-container *ngFor="let note of otherNotes; trackBy: trackById">
+        <div class="rounded-lg p-4 shadow-sm transition-all duration-300
+               hover:shadow-md animate-fade" [ngStyle]="{ 'background-color': note.color || '#fff' }">
+
+          <div class="flex items-start">
+            <input [(ngModel)]="note.title" class="w-full font-semibold text-lg bg-transparent outline-none"
+              (change)="updateTitle(note)" />
+
+            <button (click)="togglePin(note)" class="p-1">
+              <!-- UNPINNED SVG -->
+              <svg width="20" height="20" viewBox="0 0 24 24" class="text-gray-500 hover:text-gray-700">
+                <path
+                  d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2zM9 4v7.75L7.5 14h9L15 11.75V4H9z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+
+          <textarea [(ngModel)]="note.description" class="w-full bg-transparent resize-none outline-none mt-2" rows="3"
+            (change)="updateDescription(note)"></textarea>
+
+          <div class="flex justify-between items-center mt-3 text-sm">
+            <div class="w-full flex justify-between gap-3">
+              <input type="color" [value]="note.color || '#ffffff'" (change)="changeColor(note, $event.target.value)" />
+
+              <div class="flex gap-3"> 
+                <button (click)="toggleArchive(note)">
+                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5"> 
+                </button> 
+                <button (click)="deleteNote(note)">
+                  <img src="icons/delete.svg"alt="delete" class="w-5 h-5" >
+                </button> 
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
 </div>
