@@ -13,7 +13,6 @@ import { TokenService } from '../core/services/token.service';
 export class LayoutComponent implements OnInit {
 
   showProfileMenu = false;
-
   userEmail = '';
   userName = '';
 
@@ -28,6 +27,7 @@ export class LayoutComponent implements OnInit {
     if (decoded) {
       this.userEmail =
         decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+
 
       // derive name from email (before @)
       this.userName = this.userEmail

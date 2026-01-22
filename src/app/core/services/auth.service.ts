@@ -18,13 +18,15 @@ export class AuthService {
     return this.api.post('/auth/login', data);
   }
 
-  verifyEmail(data: { email: string; token: string }) {
-    return this.api.post('/auth/verify-email', data);
-  }
+  verifyEmail(data: { email: string; otp: string }) {
+  return this.api.post('/auth/verify-email', data);
+}
 
   forgotPassword(data: { email: string }) {
     return this.api.post('/auth/forgot-password', data);
   }
+
+  
 
   resetPassword(data: {
     email: string;
@@ -33,4 +35,5 @@ export class AuthService {
   }) {
     return this.api.post('/auth/reset-password', data);
   }
+  
 }
