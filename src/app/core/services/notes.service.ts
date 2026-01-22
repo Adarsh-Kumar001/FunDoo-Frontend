@@ -39,9 +39,10 @@ export class NotesService {
     return this.api.delete(`/notes/${id}`);
   }
 
-  restoreNote(id: number): Observable<any> {
-    return this.api.patch(`/notes/${id}/restore`, {});
-  }
+ restoreNote(id: number): Observable<any> {
+  return this.api.patch(`/notes/${id}/restore`, {});
+}
+
 
   deleteForever(id: number): Observable<any> {
     return this.api.delete(`/notes/${id}`);

@@ -55,9 +55,13 @@ export class BinPage implements OnInit, AfterViewInit {
   }
 
   restoreNote(note: Note): void {
-    if (!note.id) return;
-    this.notesService.restoreNote(note.id).subscribe(() => this.loadDeletedNotes());
-  }
+  if (!note.id) return;
+
+  this.notesService.restoreNote(note.id).subscribe({
+    next: () => this.loadDeletedNotes(),
+    error: err => console.error('Restore failed', err)
+  });
+}
 
   deleteForever(note: Note): void {
     if (!note.id) return;
