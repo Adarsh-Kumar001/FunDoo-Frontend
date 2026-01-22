@@ -24,10 +24,38 @@
         <img src="icons/refresh.svg" alt="refresh" class="w-12 h-12 p-3 hover:bg-gray-200 rounded-full hover:cursor-pointer">
         <img src="icons/list.svg" alt="list" class="w-12 h-12 p-3 hover:bg-gray-200 rounded-full hover:cursor-pointer">
         <img src="icons/settings.svg" alt="list" class="w-12 h-12 p-3 hover:bg-gray-200 rounded-full hover:cursor-pointer mr-7">
-    <img
-      src="https://i.pravatar.cc/40"
-      class="h-9 w-9 rounded-full cursor-pointer"
-    />
+    <!-- PROFILE -->
+<div class="relative">
+  <!-- Avatar -->
+  <div
+    class="h-9 w-9 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold cursor-pointer select-none"
+    (click)="toggleProfileMenu($event)"
+  >
+    {{ initials }}
+  </div>
+
+  <!-- Dropdown -->
+  <div
+    *ngIf="showProfileMenu"
+    class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border z-50"
+  >
+    <div class="p-4 border-b">
+      <div class="h-10 w-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-semibold mb-2">
+        {{ initials }}
+      </div>
+      <p class="text-sm font-medium text-gray-800">{{ userName }}</p>
+      <p class="text-sm text-gray-500">{{ userEmail }}</p>
+    </div>
+
+    <button
+      class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 hover:rounded-br-xl hover:rounded-bl-xl hover:cursor-pointer"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
     </div>
   </header>
 
