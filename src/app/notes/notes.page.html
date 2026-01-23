@@ -107,7 +107,7 @@
                   <p class="text-xs text-gray-500 font-semibold mb-2 px-2">Label note</p>
                   <div *ngFor="let label of allLabels" 
                     class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
-                    (click)="toggleNoteLabel(note, label); $event.stopPropagation()">
+                    (click)="toggleNoteLabel(note, label, $event)">
                     <input type="checkbox" [checked]="hasLabel(note, label.labelId)" class="pointer-events-none"/>
                     <span class="text-sm">{{ label.labelName }}</span>
                   </div>
@@ -199,7 +199,7 @@
                   <p class="text-xs text-gray-500 font-semibold mb-2 px-2">Label note</p>
                   <div *ngFor="let label of allLabels" 
                     class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
-                    (click)="toggleNoteLabel(note, label); $event.stopPropagation()">
+                    (click)="toggleNoteLabel(note, label, $event)">
                     <input type="checkbox" [checked]="hasLabel(note, label.labelId)" class="pointer-events-none"/>
                     <span class="text-sm">{{ label.labelName }}</span>
                   </div>

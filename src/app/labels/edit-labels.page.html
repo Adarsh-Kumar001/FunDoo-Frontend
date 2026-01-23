@@ -35,7 +35,7 @@
         <div
           *ngIf="editingLabelId !== label.labelId"
           class="flex-1 text-gray-700 cursor-pointer"
-          (click)="startEditing(label)"
+          (click)="startEditing(label); $event.stopPropagation()"
         >
           {{ label.labelName }}
         </div>
@@ -68,8 +68,9 @@
 
         <!-- Delete button -->
         <button
-          (click)="deleteLabel(label.labelId)"
+          (click)="deleteLabel(label.labelId, $event)"
           class="p-2 hover:bg-gray-100 rounded-full transition"
+          type="button"
         >
           <img src="icons/delete.svg" class="w-5 h-5" alt="delete"/>
         </button>

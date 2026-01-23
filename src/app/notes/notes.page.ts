@@ -214,23 +214,32 @@ expandNote(event: Event) {
     return note.labels?.some(l => l.labelId === labelId) || false;
   }
 
-  toggleNoteLabel(note: Note, label: Label): void {
+  toggleNoteLabel(note: Note, label: Label, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
     if (!note.id) return;
 
     const hasLabel = this.hasLabel(note, label.labelId);
 
     if (hasLabel) {
+      // Remove label
       this.labelService.removeLabelFromNote(label.labelId, note.id).subscribe({
         next: () => {
-          note.labels = note.labels?.filter(l => l.labelId !== label.labelId);
+          if (note.labels) {
+            note.labels = note.labels.filter(l => l.labelId !== label.labelId);
+          }
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to remove label:', err)
       });
     } else {
+      // Add label
       this.labelService.addLabelToNote(label.labelId, note.id).subscribe({
         next: () => {
           if (!note.labels) note.labels = [];
-          note.labels.push(label);
+          note.labels.push({ labelId: label.labelId, labelName: label.labelName });
+          this.cdr.detectChanges();
         },
         error: (err) => console.error('Failed to add label:', err)
       });

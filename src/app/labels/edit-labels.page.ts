@@ -67,12 +67,31 @@ export class EditLabelsPage implements OnInit {
     });
   }
 
-  deleteLabel(labelId: number): void {
+  deleteLabel(labelId: number, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Cancel editing mode if this label is being edited
+    if (this.editingLabelId === labelId) {
+      this.cancelEditing();
+    }
+    
+    console.log('Attempting to delete label:', labelId);
+    
     this.labelService.delete(labelId).subscribe({
-      next: () => {
-        this.loadLabels();
+      next: (response) => {
+        console.log('Delete response:', response);
+        // Optimistically remove from local array
+        this.labels = this.labels.filter(l => l.labelId !== labelId);
       },
-      error: (err) => console.error('Failed to delete label:', err)
+      error: (err) => {
+        console.error('Failed to delete label. Error details:', err);
+        alert(`Failed to delete label: ${err.error?.message || err.message || 'Unknown error'}`);
+        // Reload on error to ensure consistency
+        this.loadLabels();
+      }
     });
   }
 }

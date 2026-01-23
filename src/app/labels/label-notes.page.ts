@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChildren, QueryList, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,7 @@ import { Label } from '../core/models/label.model';
   templateUrl: './label-notes.page.html',
   styleUrls: ['./label-notes.page.css']
 })
-export class LabelNotesPage implements OnInit {
+export class LabelNotesPage implements OnInit, AfterViewInit {
   labelId: number = 0;
   labelName: string = '';
   notes: Note[] = [];
@@ -27,10 +27,13 @@ export class LabelNotesPage implements OnInit {
 
   activeColorPickerNoteId: number | null = null;
 
+  @ViewChildren('noteTextarea') textareas!: QueryList<ElementRef<HTMLTextAreaElement>>;
+
   constructor(
     private route: ActivatedRoute,
     private notesService: NotesService,
-    private labelService: LabelService
+    private labelService: LabelService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +42,18 @@ export class LabelNotesPage implements OnInit {
       this.loadLabelAndNotes();
     });
     this.loadAllLabels();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.resizeAllTextareas(), 0);
+  }
+
+  resizeAllTextareas(): void {
+    this.textareas.forEach(ref => {
+      const textarea = ref.nativeElement;
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+    });
   }
 
   loadLabelAndNotes(): void {
@@ -58,6 +73,8 @@ export class LabelNotesPage implements OnInit {
           !note.isDeleted && 
           !note.isArchived
         );
+        setTimeout(() => this.resizeAllTextareas(), 0);
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to load notes:', err)
     });
