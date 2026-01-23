@@ -7,6 +7,8 @@ import { LayoutComponent } from './layout/layout.component';
 import { authGuard } from './core/guards/auth.guard';
 import { ArchivePage } from './archive/archive.page';
 import { VerifyEmailComponent } from './auth/verify-email/verify-email.component';
+import { EditLabelsPage } from './labels/edit-labels.page';
+import { LabelNotesPage } from './labels/label-notes.page';
 
 export const routes: Routes = [
 
@@ -24,6 +26,8 @@ export const routes: Routes = [
       { path: 'notes', component: NotesPage },
       { path: 'bin', component: BinPage },
        { path: 'archive', component: ArchivePage },
+      { path: 'edit-labels', component: EditLabelsPage },
+      { path: 'labels/:labelId', component: LabelNotesPage },
       { path: '', redirectTo: 'notes', pathMatch: 'full' }
     ]
   },

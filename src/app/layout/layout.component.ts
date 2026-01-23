@@ -1,7 +1,10 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TokenService } from '../core/services/token.service';
+import { LabelService } from '../core/services/label.service';
+import { Label } from '../core/models/label.model';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-layout',
@@ -15,10 +18,12 @@ export class LayoutComponent implements OnInit {
   showProfileMenu = false;
   userEmail = '';
   userName = '';
+  labels: Label[] = [];
 
   constructor(
     private tokenService: TokenService,
-    private router: Router
+    private router: Router,
+    private labelService: LabelService
   ) {}
 
   ngOnInit(): void {
@@ -34,6 +39,26 @@ export class LayoutComponent implements OnInit {
         ? this.userEmail.split('@')[0]
         : 'User';
     }
+
+    this.loadLabels();
+
+    // Reload labels when navigating away from edit-labels page
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        if (event.url.includes('edit-labels') || event.url.includes('notes')) {
+          this.loadLabels();
+        }
+      });
+  }
+
+  loadLabels(): void {
+    this.labelService.getAll().subscribe({
+      next: (labels) => {
+        this.labels = labels;
+      },
+      error: (err) => console.error('Failed to load labels:', err)
+    });
   }
 
   get initials(): string {

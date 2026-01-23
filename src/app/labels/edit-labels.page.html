@@ -1,0 +1,85 @@
+<div class="max-w-2xl mx-auto py-8">
+  <h2 class="text-2xl font-semibold mb-6 text-gray-800">Edit labels</h2>
+
+  <!-- Create new label -->
+  <div class="bg-white rounded-lg shadow-sm border mb-6 p-4">
+    <div class="flex items-center gap-3">
+      <img src="icons/add.svg" class="w-5 h-5 text-gray-600" alt="add"/>
+      <input
+        [(ngModel)]="newLabelName"
+        (keyup.enter)="createLabel()"
+        placeholder="Create new label"
+        class="flex-1 outline-none text-gray-700"
+      />
+      <button
+        (click)="createLabel()"
+        class="text-gray-600 hover:text-gray-800 font-medium text-sm px-4 py-1"
+      >
+        Create
+      </button>
+    </div>
+  </div>
+
+  <!-- Labels list -->
+  <div class="space-y-2">
+    <div
+      *ngFor="let label of labels"
+      class="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow"
+    >
+      <div class="flex items-center gap-3">
+        <!-- Label icon -->
+        <img src="icons/label.svg" class="w-5 h-5 text-gray-600" alt="label" *ngIf="editingLabelId !== label.labelId"/>
+        <img src="icons/edit.svg" class="w-5 h-5 text-gray-600" alt="edit" *ngIf="editingLabelId === label.labelId"/>
+
+        <!-- Label name (view mode) -->
+        <div
+          *ngIf="editingLabelId !== label.labelId"
+          class="flex-1 text-gray-700 cursor-pointer"
+          (click)="startEditing(label)"
+        >
+          {{ label.labelName }}
+        </div>
+
+        <!-- Label name (edit mode) -->
+        <input
+          *ngIf="editingLabelId === label.labelId"
+          [(ngModel)]="editingLabelName"
+          (keyup.enter)="saveLabel(label.labelId)"
+          (keyup.escape)="cancelEditing()"
+          class="flex-1 outline-none text-gray-700 border-b-2 border-blue-500"
+          autofocus
+        />
+
+        <!-- Actions (edit mode) -->
+        <div *ngIf="editingLabelId === label.labelId" class="flex gap-2">
+          <button
+            (click)="saveLabel(label.labelId)"
+            class="text-blue-600 hover:text-blue-800 font-medium text-sm px-3 py-1"
+          >
+            Done
+          </button>
+          <button
+            (click)="cancelEditing()"
+            class="text-gray-600 hover:text-gray-800 font-medium text-sm px-3 py-1"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <!-- Delete button -->
+        <button
+          (click)="deleteLabel(label.labelId)"
+          class="p-2 hover:bg-gray-100 rounded-full transition"
+        >
+          <img src="icons/delete.svg" class="w-5 h-5" alt="delete"/>
+        </button>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="labels.length === 0" class="text-center py-12 text-gray-500">
+      <p class="text-lg">No labels yet</p>
+      <p class="text-sm mt-2">Create your first label above</p>
+    </div>
+  </div>
+</div>

@@ -20,8 +20,6 @@ export class VerifyEmailComponent {
   constructor(private auth: AuthService, private router: Router) {}
 
  verify() {
-  console.log('Email:', this.email);
-  console.log('OTP:', this.otp);
 
   this.auth.verifyEmail({
     email: this.email.trim(),

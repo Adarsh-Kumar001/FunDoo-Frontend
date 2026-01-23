@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
+import { Label } from '../models/label.model';
 
 export interface Note {
   id?: number;
@@ -12,6 +13,7 @@ export interface Note {
   createdAt?: string;
   updatedAt?: string;
   isDeleted?: boolean;
+  labels?: Label[];
 }
 
 @Injectable({ providedIn: 'root' })

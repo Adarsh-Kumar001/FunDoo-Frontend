@@ -90,6 +90,19 @@
           <img src="icons/edit.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">Edit Labels</h4>
         </a>
 
+        <!-- LABELS SECTION -->
+        <div *ngIf="labels.length > 0" class="mt-4 border-t pt-2">
+          <p class="text-xs text-gray-500 font-semibold px-4 mb-1">LABELS</p>
+          <a
+            *ngFor="let label of labels"
+            [routerLink]="['/labels', label.labelId]"
+            routerLinkActive="bg-yellow-100 font-semibold"
+            class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100 rounded-tl-none rounded-bl-none"
+          >
+            <img src="icons/label.svg" class="fill-black h-6 w-6"/> <h4 class="font-semibold">{{ label.labelName }}</h4>
+          </a>
+        </div>
+
          <a routerLink="/archive"
           routerLinkActive="bg-yellow-100 font-semibold"
           class="flex items-center gap-9 px-4 py-3 rounded-full hover:bg-gray-100 rounded-tl-none rounded-bl-none"

@@ -4,6 +4,8 @@ import { TokenService } from '../core/services/token.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LabelService } from '../core/services/label.service';
+import { Label } from '../core/models/label.model';
 
 @Component({
   selector: 'app-notes',
@@ -17,6 +19,7 @@ export class NotesPage implements OnInit, AfterViewInit {
   notes: Note[] = [];
   pinnedNotes: Note[] = [];
   otherNotes: Note[] = [];
+  allLabels: Label[] = [];
 
   isExpanded = false;
   showCreateColorPalette = false; // for new note
@@ -36,12 +39,14 @@ export class NotesPage implements OnInit, AfterViewInit {
   ];
 
   activeColorPickerNoteId: number | null = null;
+  activeLabelPickerNoteId: number | null = null;
 
   constructor(
     private notesService: NotesService,
     private tokenService: TokenService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private labelService: LabelService
   ) {}
 
   ngOnInit(): void {
@@ -50,10 +55,20 @@ export class NotesPage implements OnInit, AfterViewInit {
       return;
     }
     this.loadNotes();
+    this.loadLabels();
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => this.resizeAllTextareas(), 0);
+  }
+
+  loadLabels(): void {
+    this.labelService.getAll().subscribe({
+      next: (labels) => {
+        this.allLabels = labels;
+      },
+      error: (err) => console.error('Failed to load labels:', err)
+    });
   }
 
   /** -------------------- NEW NOTE FUNCTIONS -------------------- */
@@ -186,5 +201,39 @@ expandNote(event: Event) {
   logout(): void {
     this.tokenService.clearToken();
     this.router.navigate(['/auth/login']);
+  }
+
+  /** -------------------- LABEL FUNCTIONS -------------------- */
+  toggleLabelPicker(noteId?: number): void {
+    if (noteId == null) return;
+    this.activeLabelPickerNoteId =
+      this.activeLabelPickerNoteId === noteId ? null : noteId;
+  }
+
+  hasLabel(note: Note, labelId: number): boolean {
+    return note.labels?.some(l => l.labelId === labelId) || false;
+  }
+
+  toggleNoteLabel(note: Note, label: Label): void {
+    if (!note.id) return;
+
+    const hasLabel = this.hasLabel(note, label.labelId);
+
+    if (hasLabel) {
+      this.labelService.removeLabelFromNote(label.labelId, note.id).subscribe({
+        next: () => {
+          note.labels = note.labels?.filter(l => l.labelId !== label.labelId);
+        },
+        error: (err) => console.error('Failed to remove label:', err)
+      });
+    } else {
+      this.labelService.addLabelToNote(label.labelId, note.id).subscribe({
+        next: () => {
+          if (!note.labels) note.labels = [];
+          note.labels.push(label);
+        },
+        error: (err) => console.error('Failed to add label:', err)
+      });
+    }
   }
 }

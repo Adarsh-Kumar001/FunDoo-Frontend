@@ -1,0 +1,83 @@
+<div class="max-w-6xl mx-auto">
+  <h2 class="text-2xl font-semibold mb-6 text-gray-800">{{ labelName }}</h2>
+
+  <!-- Notes Grid -->
+  <div *ngIf="notes.length > 0; else emptyState">
+    <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-start">
+      <ng-container *ngFor="let note of notes; trackBy: trackById">
+        <div class="group relative rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+          [ngStyle]="{ 'background-color': note.color || '#fff' }" [class.z-50]="activeColorPickerNoteId === note.id">
+
+          <!-- TITLE + PIN -->
+          <div class="flex items-start">
+            <input [(ngModel)]="note.title" class="w-full font-semibold text-lg bg-transparent outline-none"
+              (blur)="updateNote(note)" />
+
+            <button (click)="togglePin(note)" class="p-1 opacity-0 group-hover:opacity-100 transition duration-200">
+              <svg width="20" height="20" viewBox="0 0 24 24" class="text-gray-700" *ngIf="note.isPinned">
+                <path d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2z"
+                  fill="currentColor" />
+              </svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" class="text-gray-500 hover:text-gray-700" *ngIf="!note.isPinned">
+                <path
+                  d="M17 4v7l2 3v2h-6v5l-1 1-1-1v-5H5v-2l2-3V4c0-1.1.9-2 2-2h6c1.11 0 2 .89 2 2zM9 4v7.75L7.5 14h9L15 11.75V4H9z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+
+          <textarea #noteTextarea [(ngModel)]="note.description" (input)="autoGrow($event); updateNote(note)"
+            class="w-full bg-transparent resize-none outline-none mt-2" rows="3" (blur)="updateNote(note)">
+          </textarea>
+
+          <!-- Labels -->
+          <div *ngIf="note.labels && note.labels.length > 0" class="flex flex-wrap gap-2 mt-2">
+            <span *ngFor="let label of note.labels" class="text-xs px-2 py-1 bg-gray-200 rounded-full">
+              {{ label.labelName }}
+            </span>
+          </div>
+
+          <div
+            class="flex justify-between items-center mt-3 text-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
+
+            <div class="w-full flex justify-between gap-3">
+
+              <div class="relative">
+                <!-- Color Icon -->
+                <button (click)="toggleNoteColorPicker(note.id)" class="p-1 rounded hover:bg-gray-100">
+                  <img src="icons/palette.svg" class="w-5 h-5" />
+                </button>
+
+                <!-- Palette -->
+                <div *ngIf="activeColorPickerNoteId === note.id"
+                  class="absolute bottom-8 left-0 z-10 flex gap-2 bg-white border rounded-full p-2 shadow-md">
+                  <button *ngFor="let color of colors" class="w-6 h-6 rounded-full border hover:scale-110 transition"
+                    [ngStyle]="{ 'background-color': color }" (click)="selectNoteColor(note, color)">
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
+                <button (click)="toggleArchive(note)">
+                  <img src="icons/archive.svg" alt="archive" class="w-5 h-5">
+                </button>
+                <button (click)="deleteNote(note)">
+                  <img src="icons/delete.svg" alt="delete" class="w-5 h-5">
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <ng-template #emptyState>
+    <div class="text-center py-20 text-gray-500">
+      <img src="icons/label.svg" class="w-24 h-24 mx-auto mb-4 opacity-30" />
+      <p class="text-lg">No notes with this label yet</p>
+      <p class="text-sm mt-2">Notes you add this label to will appear here</p>
+    </div>
+  </ng-template>
+</div>

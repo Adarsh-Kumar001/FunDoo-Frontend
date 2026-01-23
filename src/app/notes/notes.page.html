@@ -66,6 +66,14 @@
           <textarea #noteTextarea [(ngModel)]="note.description" (input)="autoGrow($event); updateNote(note)"
             class="w-full bg-transparent resize-none outline-none mt-2" rows="3" (blur)="updateNote(note)">
           </textarea>
+
+          <!-- Labels -->
+          <div *ngIf="note.labels && note.labels.length > 0" class="flex flex-wrap gap-2 mt-2">
+            <span *ngFor="let label of note.labels" class="text-xs px-2 py-1 bg-gray-200 rounded-full">
+              {{ label.labelName }}
+            </span>
+          </div>
+
           <div
             class="flex justify-between items-center mt-3 text-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
 
@@ -84,6 +92,28 @@
                     [ngStyle]="{ 'background-color': color }" (click)="selectNoteColor(note, color)">
 
                   </button>
+                </div>
+              </div>
+
+              <!-- Label Icon -->
+              <div class="relative">
+                <button (click)="toggleLabelPicker(note.id); $event.stopPropagation()" class="p-1 rounded hover:bg-gray-100">
+                  <img src="icons/label.svg" class="w-5 h-5" />
+                </button>
+
+                <!-- Label Picker Dropdown -->
+                <div *ngIf="activeLabelPickerNoteId === note.id"
+                  class="absolute bottom-8 left-0 z-20 bg-white border rounded shadow-lg p-2 min-w-[200px] max-h-[300px] overflow-y-auto">
+                  <p class="text-xs text-gray-500 font-semibold mb-2 px-2">Label note</p>
+                  <div *ngFor="let label of allLabels" 
+                    class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
+                    (click)="toggleNoteLabel(note, label); $event.stopPropagation()">
+                    <input type="checkbox" [checked]="hasLabel(note, label.labelId)" class="pointer-events-none"/>
+                    <span class="text-sm">{{ label.labelName }}</span>
+                  </div>
+                  <div *ngIf="allLabels.length === 0" class="text-sm text-gray-500 px-2 py-2">
+                    No labels yet. Create one in Edit Labels.
+                  </div>
                 </div>
               </div>
 
@@ -130,6 +160,13 @@
           <textarea #noteTextarea [(ngModel)]="note.description" (input)="autoGrow($event); updateNote(note)"
             class="w-full bg-transparent resize-none outline-none mt-2" rows="3" (blur)="updateNote(note)"></textarea>
 
+          <!-- Labels -->
+          <div *ngIf="note.labels && note.labels.length > 0" class="flex flex-wrap gap-2 mt-2">
+            <span *ngFor="let label of note.labels" class="text-xs px-2 py-1 bg-gray-200 rounded-full">
+              {{ label.labelName }}
+            </span>
+          </div>
+
           <div
             class="flex justify-between items-center mt-3 text-sm opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
 
@@ -150,6 +187,27 @@
                 </div>
               </div>
 
+              <!-- Label Icon -->
+              <div class="relative">
+                <button (click)="toggleLabelPicker(note.id); $event.stopPropagation()" class="p-1 rounded hover:bg-gray-100">
+                  <img src="icons/label.svg" class="w-5 h-5" />
+                </button>
+
+                <!-- Label Picker Dropdown -->
+                <div *ngIf="activeLabelPickerNoteId === note.id"
+                  class="absolute bottom-8 left-0 z-20 bg-white border rounded shadow-lg p-2 min-w-[200px] max-h-[300px] overflow-y-auto">
+                  <p class="text-xs text-gray-500 font-semibold mb-2 px-2">Label note</p>
+                  <div *ngFor="let label of allLabels" 
+                    class="flex items-center gap-2 px-2 py-1 hover:bg-gray-100 cursor-pointer rounded"
+                    (click)="toggleNoteLabel(note, label); $event.stopPropagation()">
+                    <input type="checkbox" [checked]="hasLabel(note, label.labelId)" class="pointer-events-none"/>
+                    <span class="text-sm">{{ label.labelName }}</span>
+                  </div>
+                  <div *ngIf="allLabels.length === 0" class="text-sm text-gray-500 px-2 py-2">
+                    No labels yet. Create one in Edit Labels.
+                  </div>
+                </div>
+              </div>
 
               <div class="flex gap-3">
                 <button (click)="toggleArchive(note)">
